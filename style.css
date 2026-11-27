@@ -1,0 +1,132 @@
+:root {
+  --paper: #f6f1e4;
+  --card: #fffdf7;
+  --ink: #1d2540;
+  --muted: #5d6478;
+  --navy: #1f2d5c;
+  --gold: #d6a23d;
+  --line: #d9d0bb;
+  --host: #e0731c;
+  --guest: #2a62c9;
+  --ladder: #2f8a57;
+  --snake: #9a3d8c;
+  --y1: #fbefcf; --y2: #e3f1dc; --y3: #dfe9f7; --y4: #f3e1ee;
+  --bad: #b3261e;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font: 16px/1.6 "Noto Sans TC", system-ui, sans-serif;
+  min-height: 100vh; display: flex; flex-direction: column;
+}
+#app { flex: 1; width: 100%; max-width: 1040px; margin: 0 auto; padding: 16px; }
+.screen[hidden], [hidden] { display: none !important; }
+
+/* 首頁 */
+.brand { text-align: center; margin: 28px 0 20px; }
+.kicker { margin: 0; color: var(--muted); font-size: 14px; letter-spacing: .08em; }
+h1 { margin: 4px 0 8px; font-size: clamp(30px, 7vw, 46px); font-weight: 900; color: var(--navy); }
+.sub { margin: 0 auto; max-width: 560px; color: var(--muted); }
+.lad { color: var(--ladder); } .snk { color: var(--snake); }
+.panel { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 20px; max-width: 460px; margin: 0 auto; box-shadow: 0 2px 0 var(--line); }
+.panel.center { text-align: center; }
+.field { display: block; font-size: 14px; color: var(--muted); margin-bottom: 12px; }
+.field input { display: block; width: 100%; margin-top: 4px; padding: 10px 12px; font: inherit; font-size: 17px; border: 1.5px solid var(--line); border-radius: 10px; background: #fff; color: var(--ink); }
+.field input:focus { outline: 3px solid color-mix(in srgb, var(--gold) 45%, transparent); border-color: var(--gold); }
+.row { display: flex; gap: 10px; }
+.row .btn { flex: 1; }
+.join { display: flex; gap: 10px; align-items: flex-end; margin-top: 16px; padding-top: 16px; border-top: 1px dashed var(--line); }
+.join .field { flex: 1; margin: 0; }
+.btn { font: inherit; font-weight: 700; padding: 10px 18px; border-radius: 10px; border: 1.5px solid var(--navy); background: #fff; color: var(--navy); cursor: pointer; min-height: 44px; }
+.btn.primary { background: var(--navy); color: #fff; }
+.btn:disabled { opacity: .55; cursor: default; }
+.btn:focus-visible { outline: 3px solid var(--gold); outline-offset: 2px; }
+.btn.small { min-height: 36px; padding: 6px 14px; font-size: 14px; }
+.btn.big { font-size: 20px; padding: 12px 28px; }
+.btn.wait { background: #fff; color: var(--navy); }
+.msg { min-height: 1.6em; margin: 12px 0 0; font-size: 14px; color: var(--bad); }
+.msg.ok { color: var(--muted); }
+.rules { max-width: 460px; margin: 16px auto 0; color: var(--muted); font-size: 15px; }
+.rules summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+.room { font-size: 56px; font-weight: 900; letter-spacing: .2em; margin: 4px 0; color: var(--navy); font-variant-numeric: tabular-nums; }
+.hint { color: var(--muted); margin: 0 0 16px; }
+
+/* 遊戲 */
+#game { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+.board-wrap { width: 100%; max-width: calc((100vh - 70px) * 1000 / 1090); justify-self: center; }
+#board { display: block; width: 100%; height: auto; }
+.side { display: flex; flex-direction: column; gap: 12px; }
+.round { display: flex; justify-content: space-between; margin: 0; font-weight: 700; color: var(--muted); }
+#scoreTxt { color: var(--navy); font-size: 18px; }
+.players { display: grid; gap: 8px; }
+.pl { display: grid; grid-template-columns: 18px 1fr auto; align-items: center; gap: 8px; padding: 8px 12px; background: var(--card); border: 2px solid var(--line); border-radius: 12px; }
+.pl .dot { width: 16px; height: 16px; border-radius: 50%; }
+.pl.host .dot { background: var(--host); } .pl.guest .dot { background: var(--guest); }
+.pl.turn.host { border-color: var(--host); } .pl.turn.guest { border-color: var(--guest); }
+.pl b { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pl span { font-variant-numeric: tabular-nums; color: var(--muted); font-size: 14px; }
+.status { margin: 0; font-size: 20px; font-weight: 900; color: var(--navy); min-height: 1.6em; }
+.dice-row { display: flex; align-items: center; gap: 16px; }
+.die { width: 72px; height: 72px; flex: none; background: #fff; border: 2px solid var(--navy); border-radius: 14px; display: grid; grid-template: repeat(3, 1fr) / repeat(3, 1fr); padding: 9px; box-shadow: 0 3px 0 var(--navy); }
+.die i { width: 13px; height: 13px; margin: auto; border-radius: 50%; background: var(--navy); visibility: hidden; }
+.die.spin { animation: wobble .18s linear infinite; }
+@keyframes wobble { 0% { transform: rotate(-12deg); } 50% { transform: rotate(12deg); } 100% { transform: rotate(-12deg); } }
+@media (prefers-reduced-motion: reduce) { .die.spin { animation: none; } }
+/* 點數 → 九宮格裡哪幾個點要顯示 */
+.die[data-v="1"] i:nth-child(5),
+.die[data-v="2"] i:is(:nth-child(1), :nth-child(9)),
+.die[data-v="3"] i:is(:nth-child(1), :nth-child(5), :nth-child(9)),
+.die[data-v="4"] i:is(:nth-child(1), :nth-child(3), :nth-child(7), :nth-child(9)),
+.die[data-v="5"] i:is(:nth-child(1), :nth-child(3), :nth-child(5), :nth-child(7), :nth-child(9)),
+.die[data-v="6"] i:is(:nth-child(1), :nth-child(3), :nth-child(4), :nth-child(6), :nth-child(7), :nth-child(9)) { visibility: visible; }
+.die[data-v="1"] i:nth-child(5) { background: var(--bad); }
+.event { margin: 0; padding: 10px 12px; background: var(--card); border-left: 4px solid var(--gold); border-radius: 6px; min-height: 3.4em; font-size: 15px; }
+.event.ladder { border-left-color: var(--ladder); }
+.event.snake { border-left-color: var(--snake); }
+.result { background: var(--navy); color: #fff; border-radius: 12px; padding: 14px; text-align: center; }
+.result p { margin: 0 0 10px; font-weight: 700; font-size: 18px; }
+.result .btn { background: var(--gold); border-color: var(--gold); color: var(--ink); }
+.legend { font-size: 14px; color: var(--muted); }
+.legend summary { cursor: pointer; font-weight: 700; color: var(--ink); }
+.legend ul { margin: 6px 0 0; padding-left: 18px; }
+.legend .l { color: var(--ladder); } .legend .s { color: var(--snake); }
+#btnLeave { align-self: flex-start; }
+
+/* 棋盤 SVG */
+.cell { stroke: #fff; stroke-width: 3; }
+.cell.y1 { fill: var(--y1); } .cell.y2 { fill: var(--y2); } .cell.y3 { fill: var(--y3); } .cell.y4 { fill: var(--y4); }
+.cell.alt { filter: brightness(.96); }
+.num { font: 700 24px "Noto Sans TC", sans-serif; fill: #6b6f80; }
+.ytag { font: 900 20px "Noto Sans TC", sans-serif; fill: var(--navy); opacity: .55; }
+.goal { font: 900 22px "Noto Sans TC", sans-serif; fill: var(--gold); }
+.start-box { fill: var(--card); stroke: var(--line); stroke-width: 3; }
+.start-txt { font: 700 26px "Noto Sans TC", sans-serif; fill: var(--muted); }
+.rail { stroke: var(--ladder); stroke-width: 10; stroke-linecap: round; }
+.rung { stroke: var(--ladder); stroke-width: 7; stroke-linecap: round; }
+.snake-body { fill: none; stroke: var(--snake); stroke-width: 22; stroke-linecap: round; stroke-linejoin: round; opacity: .92; }
+.snake-stripe { fill: none; stroke: #f2d36b; stroke-width: 6; stroke-dasharray: 2 22; stroke-linecap: round; }
+.token { transition: transform .14s linear; }
+.token.jump { transition: transform .7s ease-in-out; }
+.token circle.body { stroke: #fff; stroke-width: 5; }
+.token.host circle.body { fill: var(--host); } .token.guest circle.body { fill: var(--guest); }
+.token text { font: 900 22px "Noto Sans TC", sans-serif; fill: #fff; }
+@media (prefers-reduced-motion: reduce) { .token, .token.jump { transition: none; } }
+.flash { fill: none; stroke: var(--gold); stroke-width: 8; }
+
+.toast { position: fixed; left: 50%; bottom: 64px; transform: translateX(-50%); margin: 0; background: var(--bad); color: #fff; padding: 10px 18px; border-radius: 10px; font-weight: 700; box-shadow: 0 6px 20px rgba(0,0,0,.2); z-index: 20; max-width: calc(100vw - 32px); }
+.overlay { position: fixed; inset: 0; background: rgba(20, 25, 45, .55); display: grid; place-items: center; padding: 16px; z-index: 30; }
+.big { font-size: 26px; font-weight: 900; margin: 0 0 6px; }
+
+.sign { text-align: center; padding: 10px 16px 14px; font-size: 14px; color: var(--muted); }
+.sign a { color: var(--navy); }
+
+@media (max-width: 760px) {
+  #app { padding: 12px; }
+  #game { grid-template-columns: 1fr; gap: 12px; }
+  .board-wrap { max-width: 100%; }
+  .status { font-size: 18px; }
+  .die { width: 60px; height: 60px; padding: 7px; }
+  .die i { width: 11px; height: 11px; }
+}

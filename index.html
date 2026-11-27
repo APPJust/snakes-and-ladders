@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>蛇梯棋：大學四年｜雙人對戰</title>
+<meta name="description" content="大學四年主題的蛇梯棋：梯子是考到證照，蛇是被當。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700;900&display=swap">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<main id="app">
+
+  <!-- 首頁 -->
+  <section id="home" class="screen">
+    <header class="brand">
+      <p class="kicker">雙人對戰・擲骰子比誰先畢業</p>
+      <h1>蛇梯棋：大學四年</h1>
+      <p class="sub">1 到 100 格是大學四年。停在<b class="lad">梯子</b>底部＝考到證照，往上爬；停在<b class="snk">蛇頭</b>＝被當，滑下去。</p>
+    </header>
+    <div class="panel">
+      <label class="field">你的暱稱<input id="nick" maxlength="12" autocomplete="nickname" placeholder="例如：小明"></label>
+      <div class="row">
+        <button id="btnHost" class="btn primary" type="button">開房</button>
+        <button id="btnLocal" class="btn" type="button">同一台練習</button>
+      </div>
+      <div class="join">
+        <label class="field">房間代碼<input id="code" maxlength="4" autocomplete="off" autocapitalize="characters" placeholder="例如 K3QZ" inputmode="text"></label>
+        <button id="btnJoin" class="btn" type="button">加入</button>
+      </div>
+      <p id="homeMsg" class="msg" role="status"></p>
+    </div>
+    <details class="rules">
+      <summary>規則</summary>
+      <ol>
+        <li>10×10 共 100 格，雙方從格子外的起點出發，輪流擲一顆骰子，往前走點數那麼多格。</li>
+        <li>停在梯子底部就爬到梯子頂端，停在蛇頭就滑到蛇尾；棋盤上固定有 6 座梯子、6 條蛇。</li>
+        <li>擲出 6 點可以再擲一次。</li>
+        <li>要剛好走到第 100 格才獲勝；點數超過時要倒退回來，例如在 98 擲出 5，走到 100 再退回 97。</li>
+      </ol>
+    </details>
+  </section>
+
+  <!-- 等待對手 -->
+  <section id="lobby" class="screen" hidden>
+    <div class="panel center">
+      <p class="kicker">房間代碼</p>
+      <p id="roomCode" class="room">····</p>
+      <p class="hint">把代碼告訴對手，或傳邀請連結給他。</p>
+      <div class="row">
+        <button id="btnCopy" class="btn primary" type="button">複製邀請連結</button>
+        <button id="btnCancel" class="btn" type="button">取消</button>
+      </div>
+      <p id="lobbyMsg" class="msg" role="status">正在向 PeerJS 伺服器登記房間…</p>
+    </div>
+  </section>
+
+  <!-- 遊戲 -->
+  <section id="game" class="screen" hidden>
+    <div class="board-wrap"><svg id="board" viewBox="0 0 1000 1090" role="img" aria-label="蛇梯棋棋盤"></svg></div>
+    <aside class="side">
+      <p class="round"><span id="roundNo">第 1 局</span><span id="scoreTxt">0 : 0</span></p>
+      <div class="players">
+        <div class="pl host" id="plHost"><i class="dot"></i><b id="nameHost">玩家 1</b><span id="posHost">起點</span></div>
+        <div class="pl guest" id="plGuest"><i class="dot"></i><b id="nameGuest">玩家 2</b><span id="posGuest">起點</span></div>
+      </div>
+      <p id="status" class="status" role="status" aria-live="polite"></p>
+      <div class="dice-row">
+        <div id="die" class="die" data-v="1" aria-label="骰子"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+        <button id="btnRoll" class="btn primary big" type="button">擲骰</button>
+      </div>
+      <p id="event" class="event" aria-live="polite">按「擲骰」開始，剛好走到 100 就畢業。</p>
+      <div id="result" class="result" hidden>
+        <p id="resultTxt"></p>
+        <button id="btnNext" class="btn primary" type="button">再來一局</button>
+      </div>
+      <details class="legend">
+        <summary>梯子與蛇的位置</summary>
+        <ul id="legendList"></ul>
+      </details>
+      <button id="btnLeave" class="btn small" type="button">離開</button>
+    </aside>
+    <p id="toast" class="toast" role="alert" hidden></p>
+  </section>
+
+  <!-- 對手離線 -->
+  <div id="offline" class="overlay" hidden>
+    <div class="panel center">
+      <p class="big">對手已離線</p>
+      <p class="hint" id="offlineWhy">對方關掉了網頁，或網路中斷。</p>
+      <button id="btnHome" class="btn primary" type="button">回首頁</button>
+    </div>
+  </div>
+</main>
+
+<footer class="sign">資通四勤 121200025 王小明・<a href="#" target="_blank" rel="noopener">原始碼</a></footer>
+
+<script src="https://cdn.jsdelivr.net/npm/peerjs@1.5.5/dist/peerjs.min.js"></script>
+<script src="game.js"></script>
+<script src="net.js"></script>
+<script src="ui.js"></script>
+</body>
+</html>
